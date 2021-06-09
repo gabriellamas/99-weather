@@ -1,9 +1,9 @@
+// eslint-disable-next-line no-unused-vars
 import React, {useState} from 'react';
 
 const useForm = (type) => {
   const [value, setValue] = useState('');
   const [error, setError] = useState(null);
-
   function validate(value) {
     if (type === false) return true;
     if (value.length === 0) {
@@ -24,7 +24,7 @@ const useForm = (type) => {
     setValue,
     onChange,
     error,
-    validate: () => validate(value),
+    validate: () => validate(value)
   };
 };
 
