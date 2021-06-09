@@ -16,3 +16,45 @@
   display:block;
   margin:0px 0px 8px 0px;
 }
+
+.WrapperInputs{
+  display:flex;
+  flex-direction: column;
+  background:#fff;
+  padding:24px;
+  border-radius:4px;
+
+}
+.WrapperInputCity{
+  display: flex;
+  align-items: flex-end;
+  margin-bottom:16px;
+}
+.WrapperInputCity button{
+  height:46px;
+  border:1px solid orange;
+  border-radius: 4px;
+  border-top-left-radius:0px;
+  border-bottom-left-radius:0px;
+  background:orange;
+  color:#fff;
+  padding:0px 32px;
+}
+.WrapperInputCity input{
+  border-top-right-radius:0px;
+  border-bottom-right-radius:0px;
+}
+.WrapperLocationOption{
+  display:flex;
+}
+.WrapperLocationOption p, .WrapperLocationOption button{
+  font-size: 12px;
+}
+.WrapperLocationOption button{
+  background: none;
+  border:none;
+  color:orange;
+  margin-left:4px;
+  text-decoration: underline;
+}
+  

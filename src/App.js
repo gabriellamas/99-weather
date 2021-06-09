@@ -1,6 +1,7 @@
 import Input from './components/Input'
 import useForm from './customHook/useForm'
 import GetCoords from './utils/getCoords'
+import { FiMapPin } from "react-icons/fi";
 import Styles from './App.module.css';
 
 const App = () =>{
@@ -20,13 +21,15 @@ const App = () =>{
     <div className={Styles.Wrapper}>
       <h1 className={Styles.Title}>Previsão do tempo</h1>
 
-      <Input label="Digite uma cidade" type="text" placeholder="Ex: London, São Paulo" {...cityInput}/>
-      <button type="submit" onClick={getWeatherByCity}>Buscar</button>
-
-      <p className={Styles.Divisor}>ou</p>
-
-      <label className={Styles.Label}>Pela minha localização</label>
-      <button type="button" onClick={handleGetCoords}>Liberar minha localização</button>
+      <div className={Styles.WrapperInputs}>
+        <div className={Styles.WrapperInputCity}>
+          <Input label="Digite uma cidade" type="text" placeholder="Ex: London, São Paulo" {...cityInput}/>
+          <button type="submit" onClick={getWeatherByCity}>Buscar</button>
+        </div>
+        <div className={Styles.WrapperLocationOption}>
+          <p>Prefere usar sua localização? </p><button onClick={handleGetCoords} className="link-style">Permitir localização <FiMapPin size={12}/></button>
+        </div>
+      </div>
     </div>
   )};
 

@@ -1,7 +1,6 @@
-.wrapper {
-  margin-bottom: 16px;
+.wrapper{
+  position: relative;
 }
-
 .input {
   border: 1px solid #eee;
   display: block;
@@ -25,11 +24,14 @@
   display: block;
   font-size: 1rem;
   line-height: 1;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.8rem;
 }
 
 .error {
+  position: absolute;
+  bottom:0px;
+  left:0px;
   color: #f31;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
+  font-size: 12px;
+  transform: translate(0%,100%);
 }

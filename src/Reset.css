@@ -5,6 +5,10 @@
   font-family: 'Roboto', sans-serif;
 }
 
+body{
+  background:#f4f4f4;
+}
+
 button{
   cursor:pointer;
 }
