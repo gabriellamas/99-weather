@@ -1,0 +1,18 @@
+.Wrapper{
+  width:100%;
+  max-width:400px;
+  margin:32px auto;
+}
+
+.Title{
+  margin-bottom: 24px;
+}
+
+.Divisor{
+  margin: 16px 0px;
+}
+
+.Label{
+  display:block;
+  margin:0px 0px 8px 0px;
+}
