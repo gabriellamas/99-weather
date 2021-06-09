@@ -60,8 +60,7 @@ const App = () =>{
       const cityWoeid = cities.data[0].woeid
 
       const cityWeather = await api.get(`/${cityWoeid}`)
-      console.log('cityWeather', cityWeather)
-      setCityWeather(cityWeather)
+      setCityWeather(cityWeather.data)
       setLoading(false) 
     } catch (error) {
       console.error(error)
@@ -88,10 +87,12 @@ const App = () =>{
             <p>Prefere usar sua localização? </p><button onClick={getCoords} className="link-style">Permitir localização <FiMapPin size={12}/></button>
           </div>
         </div>
-        {coords && <h2>tem coords</h2>}
-        {cityWeather && <h2>tem weather</h2>}
+        <div className={Styles.WrapperResult}>
+        {cityWeather && cityWeather.consolidated_weather.map((weather)=> <div>{weather.the_temp}</div>)}
       </div>
-
+     
+      </div>
+    
     </>
 
 
