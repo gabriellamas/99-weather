@@ -1,60 +1,63 @@
-.Wrapper{
-  width:100%;
-  max-width:400px;
-  margin:32px auto;
+.WrapperTitle {
+  width: 100%;
+  max-width: 400px;
+  margin: 32px auto 0px auto;
 }
-
-.Title{
+.Title {
   margin-bottom: 24px;
+  display: inline-block;
+}
+.WrapperInputs,
+.WrapperResult {
+  width: 100%;
+  max-width: 400px;
+  margin: 0px auto 16px auto;
 }
 
-.Divisor{
-  margin: 16px 0px;
+.Label {
+  display: block;
+  margin: 0px 0px 8px 0px;
 }
 
-.Label{
-  display:block;
-  margin:0px 0px 8px 0px;
-}
-
-.WrapperInputs, .WrapperResult{
-  display:flex;
+.ContainerInputs,
+.ContainerResult {
+  position: relative;
+  display: flex;
   flex-direction: column;
-  background:#fff;
-  padding:24px;
-  border-radius:4px;
-
+  background: #fff;
+  padding: 24px;
+  border-radius: 4px;
 }
-.WrapperInputCity{
+.ContainerInputCity {
   display: flex;
   align-items: flex-end;
-  margin-bottom:16px;
+  margin-bottom: 16px;
 }
-.WrapperInputCity button{
-  height:46px;
-  border:1px solid orange;
+.ContainerInputCity button {
+  height: 46px;
+  border: 1px solid orange;
   border-radius: 4px;
-  border-top-left-radius:0px;
-  border-bottom-left-radius:0px;
-  background:orange;
-  color:#fff;
-  padding:0px 32px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  background: orange;
+  color: #fff;
+  padding: 0px 32px;
 }
-.WrapperInputCity input{
-  border-top-right-radius:0px;
-  border-bottom-right-radius:0px;
+.ContainerInputCity input {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
-.WrapperLocationOption{
-  display:flex;
+.ContainerLocationOption {
+  display: flex;
 }
-.WrapperLocationOption p, .WrapperLocationOption button{
+.ContainerLocationOption p,
+.ContainerLocationOption button {
   font-size: 12px;
 }
-.WrapperLocationOption button{
+.ContainerLocationOption button {
   background: none;
-  border:none;
-  color:orange;
-  margin-left:4px;
+  border: none;
+  color: orange;
+  margin-left: 4px;
   text-decoration: underline;
 }
-  

@@ -1,22 +1,22 @@
 // eslint-disable-next-line no-unused-vars
-import React, {useState} from 'react';
+import React, { useState } from 'react'
 
 const useForm = (type) => {
-  const [value, setValue] = useState('');
-  const [error, setError] = useState(null);
+  const [value, setValue] = useState('')
+  const [error, setError] = useState(null)
   function validate(value) {
-    if (type === false) return true;
+    if (type === false) return true
     if (value.length === 0) {
-      setError('Digite um nome de cidade');
-      return false;
+      setError('Digite um nome de cidade')
+      return false
     } else {
-      setError(null);
-      return true;
+      setError(null)
+      return true
     }
   }
 
   function onChange({ target }) {
-    setValue(target.value);
+    setValue(target.value)
   }
 
   return {
@@ -25,7 +25,7 @@ const useForm = (type) => {
     onChange,
     error,
     validate: () => validate(value)
-  };
-};
+  }
+}
 
-export default useForm;
+export default useForm
