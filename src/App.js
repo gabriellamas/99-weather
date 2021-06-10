@@ -5,11 +5,13 @@ import useForm from './customHook/useForm'
 import { FiMapPin } from 'react-icons/fi'
 import api from './Api'
 import Loading from './components/Loading'
+//import Error from './components/Error'
 import Styles from './App.module.css'
 
 const App = () => {
   const cityInput = useForm()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(null)
+  const [error, setError] = useState(null)
   const [coords, setCoords] = useState(() => {
     if (window.localStorage.getItem('coords')) {
       return JSON.parse(window.localStorage.getItem('coords'))
@@ -23,12 +25,6 @@ const App = () => {
     }
     return null
   })
-
-  const getWeatherByCity = () => {
-    if (cityInput.validate()) {
-      console.log('Vamos buscar')
-    }
-  }
 
   const getCoords = () => {
     navigator.geolocation.getCurrentPosition(
@@ -47,19 +43,43 @@ const App = () => {
     setLoading(false)
   }
 
+  const getWeatherByCity = useCallback(async () => {
+    window.localStorage.clear()
+    setCityWeather(null)
+    setCoords(null)
+    setError(null)
+    if (cityInput.validate()) {
+      setLoading(true)
+      try {
+        const response = await api.get(`/search/?query=${cityInput.value}`)
+        if (response.data.length > 0) {
+          const cityWoeid = response.data[0].woeid
+          const cityWeather = await api.get(`/${cityWoeid}`)
+          setCityWeather(cityWeather.data)
+        } else {
+          setError('Nenhuma informação localizada')
+        }
+      } catch (error) {
+        setError(error.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+  }, [cityInput])
+
   const getWeatherByCoords = useCallback(async (coords) => {
     setLoading(true)
+    setError(null)
     try {
       const cities = await api.get(
         `/search/?lattlong=${coords.lat},${coords.long}`
       )
       const cityWoeid = cities.data[0].woeid
-
       const cityWeather = await api.get(`/${cityWoeid}`)
       setCityWeather(cityWeather.data)
       setLoading(false)
     } catch (error) {
-      console.error(error)
+      setError(error.message)
     }
   }, [])
 
@@ -95,17 +115,20 @@ const App = () => {
         </div>
       </div>
       <div className={Styles.WrapperResult}>
-        <div className={Styles.ContainerResult}>
-          {loading && <Loading />}
-          {cityWeather && (
-            <>
-              <div>{cityWeather.title}</div>
-              {cityWeather.consolidated_weather.map((weather, index) => (
-                <div key={index}>{weather.the_temp}</div>
-              ))}
-            </>
-          )}
-        </div>
+        {(loading || error || cityWeather) && (
+          <div className={Styles.ContainerResult}>
+            {loading && <Loading />}
+            {error && <p className={Styles.ErrorTitle}>{error}</p>}
+            {cityWeather && (
+              <>
+                <div>{cityWeather.title}</div>
+                {cityWeather.consolidated_weather.map((weather, index) => (
+                  <div key={index}>{weather.the_temp}</div>
+                ))}
+              </>
+            )}
+          </div>
+        )}
       </div>
     </>
   )
