@@ -61,3 +61,8 @@
   margin-left: 4px;
   text-decoration: underline;
 }
+
+.WeatherInfoContainer {
+  display: flex;
+  flex-wrap: wrap;
+}
