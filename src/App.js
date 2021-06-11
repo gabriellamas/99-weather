@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 
 import Input from './components/Input'
 import useForm from './customHook/useForm'
-import { FiMapPin, FiChevronRight } from 'react-icons/fi'
+import { FiMapPin, FiChevronRight, FiX } from 'react-icons/fi'
 import Loading from './components/Loading'
 import dateFormat from './utils/dateFormat'
 import api from './Api'
@@ -123,8 +123,8 @@ const App = () => {
         const long = position.coords.longitude
         setCoords({ lat, long })
       },
-      (responseError) => {
-        setError(responseError.message)
+      () => {
+        setError('Localização não liberada pelo usuário')
         return false
       }
     )
@@ -204,7 +204,7 @@ const App = () => {
           <div className={Styles.ContainerResult}>
             {(cities || cityWeather || error) && (
               <button className={Styles.CleanButton} onClick={clearInfos}>
-                x
+                <FiX size={14} />
               </button>
             )}
             {loading && <Loading />}
