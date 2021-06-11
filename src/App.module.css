@@ -86,6 +86,21 @@
   display: flex;
   font-size: 12px;
 }
-.MinMaxTempContainer P + p {
+.MinMaxTempContainer p + p {
   margin-left: 8px;
+}
+
+.CityOptionButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  padding: 16px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  margin: 0px -16px;
+}
+.CityOptionButton:hover {
+  background: rgba(0, 0, 0, 0.03);
 }

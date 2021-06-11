@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 
 import Input from './components/Input'
 import useForm from './customHook/useForm'
-import { FiMapPin } from 'react-icons/fi'
+import { FiMapPin, FiChevronRight } from 'react-icons/fi'
 import api from './Api'
 import Loading from './components/Loading'
 import dateFormat from './utils/dateFormat'
@@ -21,6 +21,14 @@ const App = () => {
     }
     return null
   })
+
+  const clearInfos = () => {
+    window.localStorage.clear()
+    setCityWeather(null)
+    setError(null)
+    setCoords(null)
+    setCities(null)
+  }
 
   const formatTheCitysWeather = useCallback(async (data) => {
     const WeatherStates = {
@@ -93,7 +101,7 @@ const App = () => {
 
   const getWeatherByWoeid = useCallback(
     async (woeid) => {
-      window.localStorage.clear()
+      clearInfos()
       setLoading(true)
       try {
         const cityWeather = await api.get(`/${woeid}`)
@@ -108,6 +116,7 @@ const App = () => {
   )
 
   const getCoords = () => {
+    clearInfos()
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const lat = position.coords.latitude
@@ -123,8 +132,6 @@ const App = () => {
   }
 
   const getCityListByCoords = useCallback(async (coords) => {
-    window.localStorage.clear()
-    setError(null)
     setLoading(true)
     try {
       const response = await api.get(
@@ -142,9 +149,7 @@ const App = () => {
 
   const getCityListByName = useCallback(async () => {
     if (cityInput.validate()) {
-      window.localStorage.clear()
-      setCityWeather(null)
-      setError(null)
+      clearInfos()
       setLoading(true)
       try {
         const response = await api.get(`/search/?query=${cityInput.value}`)
@@ -168,9 +173,6 @@ const App = () => {
 
   return (
     <>
-      {console.log('cityWeather', cityWeather)}
-      {console.log('coords', coords)}
-      {console.log('cities', cities)}
       <div className={Styles.WrapperTitle}>
         <h1 className={Styles.Title}>Previsão do tempo</h1>
       </div>
@@ -201,13 +203,21 @@ const App = () => {
           <div className={Styles.ContainerResult}>
             {loading && <Loading />}
             {error && <p className={Styles.ErrorTitle}>{error}</p>}
-            {cities &&
-              !cityWeather &&
-              cities.map((city, index) => (
-                <div key={index} onClick={() => getWeatherByWoeid(city.woeid)}>
-                  <p>{city.title}</p>
-                </div>
-              ))}
+            {cities && !cityWeather && (
+              <>
+                <h2>Lista encontrada</h2>
+                {cities.map((city, index) => (
+                  <button
+                    key={index}
+                    className={Styles.CityOptionButton}
+                    onClick={() => getWeatherByWoeid(city.woeid)}
+                  >
+                    <p>{city.title}</p>
+                    <FiChevronRight size={16} color={'orange'} />
+                  </button>
+                ))}
+              </>
+            )}
             {cityWeather && (
               <>
                 <h2>{cityWeather.title}</h2>
