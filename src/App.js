@@ -64,7 +64,7 @@ const App = () => {
         let realDayName
         let formatedMinTemp = weatherinfo.min_temp.toFixed(2)
         let formatedMaxTemp = weatherinfo.max_temp.toFixed(2)
-        let weatherTradution = WeatherStates[weatherinfo.weather_state_abbr]
+        let weatherTradution = weatherStates[weatherinfo.weather_state_abbr]
 
         if (dateFormat(weatherinfo.applicable_date) === dateTodayFormated) {
           customDayName = 'Hoje'
