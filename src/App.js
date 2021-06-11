@@ -22,6 +22,27 @@ const App = () => {
   })
 
   const formatTheCitysWeather = useCallback(async (data) => {
+    const WeatherStates = {
+      sn: 'Nevando',
+      sl: 'Chuva de granizo',
+      h: 'Chuva de granizo',
+      t: 'Trovejando',
+      hr: 'Chuva forte',
+      lr: 'Chuva leve',
+      s: 'Temporais',
+      hc: 'Tempo fechado',
+      lc: 'Sol entre nuvens',
+      c: 'Céu limpo'
+    }
+    const days = [
+      'domingo',
+      'segunda-feira',
+      'terça-feira',
+      'quarta-feira',
+      'quinta-feira',
+      'sexta-feita',
+      'sábado'
+    ]
     const dateToday = new Date()
     const dateTodayFormated = dateFormat(dateToday)
     const cityWeatherInfoFormated = data.consolidated_weather
@@ -29,15 +50,23 @@ const App = () => {
         (weatherinfo) =>
           dateFormat(weatherinfo.applicable_date) >= dateTodayFormated
       )
-      .map((weatherinfo) => ({
-        ...weatherinfo,
-        max_temp: weatherinfo.max_temp.toFixed(2),
-        min_temp: weatherinfo.min_temp.toFixed(2),
-        applicable_date:
-          dateFormat(weatherinfo.applicable_date) === dateTodayFormated
-            ? 'Hoje'
-            : dateFormat(weatherinfo.applicable_date)
-      }))
+      .map((weatherinfo, index) => {
+        let customDayName
+        let realDayName
+        let weatherTradution = WeatherStates[weatherinfo.weather_state_abbr]
+
+        if (dateFormat(weatherinfo.applicable_date) === dateTodayFormated) {
+          customDayName = 'Hoje'
+          realDayName = new Date(weatherinfo.applicable_date).getDay()
+        }
+        if (index === 1) {
+          customDayName = 'Amanhã'
+          realDayName = new Date(weatherinfo.applicable_date).getDay()
+        }
+        realDayName = days[new Date(weatherinfo.applicable_date).getDay()]
+
+        return { ...weatherinfo, customDayName, realDayName, weatherTradution }
+      })
 
     window.localStorage.setItem(
       'cityWeather',
@@ -153,8 +182,8 @@ const App = () => {
                 {cityWeather.consolidated_weather.map((weather, index) => (
                   <div className={Styles.WeatherInfoContainer} key={index}>
                     <div className={Styles.WeatherDateTempContainer}>
-                      <h3>{weather.applicable_date}</h3>
-                      <p>{weather.weather_state_name}</p>
+                      <h3>{weather.customDayName || weather.realDayName}</h3>
+                      <p>{weather.weatherTradution}</p>
                       <div className={Styles.MinMaxTempContainer}>
                         <p>{weather.min_temp}ºC</p>
                         <p>{weather.max_temp}ºC</p>
