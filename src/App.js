@@ -183,7 +183,7 @@ const App = () => {
                   <div className={Styles.WeatherInfoContainer} key={index}>
                     <div className={Styles.WeatherDateTempContainer}>
                       <h3>{weather.customDayName || weather.realDayName}</h3>
-                      <p>{weather.weatherTradution}</p>
+                      <h6>{weather.weatherTradution}</h6>
                       <div className={Styles.MinMaxTempContainer}>
                         <p>{weather.min_temp}ºC</p>
                         <p>{weather.max_temp}ºC</p>

@@ -78,6 +78,9 @@
   margin-bottom: 16px;
   flex: 7;
 }
+.WeatherDateTempContainer h6 {
+  font-weight: 400;
+}
 
 .MinMaxTempContainer {
   display: flex;
