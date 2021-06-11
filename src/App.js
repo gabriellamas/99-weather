@@ -3,9 +3,9 @@ import React, { useEffect, useState, useCallback } from 'react'
 import Input from './components/Input'
 import useForm from './customHook/useForm'
 import { FiMapPin, FiChevronRight } from 'react-icons/fi'
-import api from './Api'
 import Loading from './components/Loading'
 import dateFormat from './utils/dateFormat'
+import api from './Api'
 import Styles from './App.module.css'
 
 const App = () => {
@@ -202,6 +202,11 @@ const App = () => {
       <div className={Styles.WrapperResult}>
         {(loading || error || cityWeather || cities) && (
           <div className={Styles.ContainerResult}>
+            {(cities || cityWeather || error) && (
+              <button className={Styles.CleanButton} onClick={clearInfos}>
+                x
+              </button>
+            )}
             {loading && <Loading />}
             {error && <p className={Styles.ErrorTitle}>{error}</p>}
             {cities && !cityWeather && (
