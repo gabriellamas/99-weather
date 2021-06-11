@@ -13,6 +13,7 @@ const App = () => {
   const [loading, setLoading] = useState(null)
   const [error, setError] = useState(null)
   const [coords, setCoords] = useState(null)
+  const [cities, setCities] = useState(null)
 
   const [cityWeather, setCityWeather] = useState(() => {
     if (window.localStorage.getItem('cityWeather')) {
@@ -53,6 +54,8 @@ const App = () => {
       .map((weatherinfo, index) => {
         let customDayName
         let realDayName
+        let formatedMinTemp = weatherinfo.min_temp.toFixed(2)
+        let formatedMaxTemp = weatherinfo.max_temp.toFixed(2)
         let weatherTradution = WeatherStates[weatherinfo.weather_state_abbr]
 
         if (dateFormat(weatherinfo.applicable_date) === dateTodayFormated) {
@@ -65,7 +68,14 @@ const App = () => {
         }
         realDayName = days[new Date(weatherinfo.applicable_date).getDay()]
 
-        return { ...weatherinfo, customDayName, realDayName, weatherTradution }
+        return {
+          ...weatherinfo,
+          customDayName,
+          realDayName,
+          weatherTradution,
+          formatedMinTemp,
+          formatedMaxTemp
+        }
       })
 
     window.localStorage.setItem(
@@ -81,29 +91,21 @@ const App = () => {
     })
   }, [])
 
-  const getWeatherByCityName = useCallback(async () => {
-    window.localStorage.clear()
-    setCityWeather(null)
-    setCoords(null)
-    setError(null)
-    if (cityInput.validate()) {
+  const getWeatherByWoeid = useCallback(
+    async (woeid) => {
+      window.localStorage.clear()
       setLoading(true)
       try {
-        const response = await api.get(`/search/?query=${cityInput.value}`)
-        if (response.data.length > 0) {
-          const cityWoeid = response.data[0].woeid
-          const cityWeather = await api.get(`/${cityWoeid}`)
-          formatTheCitysWeather(cityWeather.data)
-        } else {
-          setError('Nenhuma informação localizada')
-        }
+        const cityWeather = await api.get(`/${woeid}`)
+        formatTheCitysWeather(cityWeather.data)
       } catch (error) {
         setError(error.message)
       } finally {
         setLoading(false)
       }
-    }
-  }, [cityInput, formatTheCitysWeather])
+    },
+    [formatTheCitysWeather]
+  )
 
   const getCoords = () => {
     navigator.geolocation.getCurrentPosition(
@@ -120,32 +122,54 @@ const App = () => {
     setLoading(false)
   }
 
-  const getWeatherByCityCoords = useCallback(async () => {
+  const getCityListByCoords = useCallback(async () => {
     window.localStorage.clear()
-    setError(null)
-    setCityWeather(null)
-    setCoords(null)
     setLoading(true)
     try {
-      const cities = await api.get(
+      const response = await api.get(
         `/search/?lattlong=${coords.lat},${coords.long}`
       )
-      const cityWoeid = cities.data[0].woeid
-      const cityWeather = await api.get(`/${cityWoeid}`)
-      formatTheCitysWeather(cityWeather.data)
+      if (cities.data.length > 0) {
+        const cities = response.data
+        setCities(cities)
+      }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
     }
-  }, [formatTheCitysWeather, coords])
+  }, [coords, cities])
+
+  const getCityListByName = useCallback(async () => {
+    if (cityInput.validate()) {
+      window.localStorage.clear()
+      setCityWeather(null)
+      setLoading(true)
+      try {
+        const response = await api.get(`/search/?query=${cityInput.value}`)
+        if (response.data.length > 0) {
+          const cities = response.data
+          setCities(cities)
+        } else {
+          setError('Nenhuma cidade encontrada')
+        }
+      } catch (error) {
+        setError(error.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+  }, [cityInput])
 
   useEffect(() => {
-    if (coords && !cityWeather) getWeatherByCityCoords(coords)
-  }, [coords, getWeatherByCityCoords, cityWeather])
+    if (coords && !cityWeather) getCityListByCoords(coords)
+  }, [coords, getCityListByCoords, cityWeather])
 
   return (
     <>
+      {console.log('cityWeather', cityWeather)}
+      {console.log('coords', coords)}
+      {console.log('cities', cities)}
       <div className={Styles.WrapperTitle}>
         <h1 className={Styles.Title}>Previsão do tempo</h1>
       </div>
@@ -159,7 +183,7 @@ const App = () => {
               placeholder="Ex: London, São Paulo"
               {...cityInput}
             />
-            <button type="submit" onClick={getWeatherByCityName}>
+            <button type="submit" onClick={getCityListByName}>
               Buscar
             </button>
           </div>
@@ -172,10 +196,17 @@ const App = () => {
         </div>
       </div>
       <div className={Styles.WrapperResult}>
-        {(loading || error || cityWeather) && (
+        {(loading || error || cityWeather || cities) && (
           <div className={Styles.ContainerResult}>
             {loading && <Loading />}
             {error && <p className={Styles.ErrorTitle}>{error}</p>}
+            {cities &&
+              !cityWeather &&
+              cities.map((city, index) => (
+                <div key={index} onClick={() => getWeatherByWoeid(city.woeid)}>
+                  <p>{city.title}</p>
+                </div>
+              ))}
             {cityWeather && (
               <>
                 <h2>{cityWeather.title}</h2>
@@ -185,8 +216,8 @@ const App = () => {
                       <h3>{weather.customDayName || weather.realDayName}</h3>
                       <h6>{weather.weatherTradution}</h6>
                       <div className={Styles.MinMaxTempContainer}>
-                        <p>{weather.min_temp}ºC</p>
-                        <p>{weather.max_temp}ºC</p>
+                        <p>{weather.formatedMinTemp}ºC</p>
+                        <p>{weather.formatedMaxTemp}ºC</p>
                       </div>
                     </div>
                     <img
