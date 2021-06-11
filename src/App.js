@@ -122,28 +122,29 @@ const App = () => {
     setLoading(false)
   }
 
-  const getCityListByCoords = useCallback(async () => {
+  const getCityListByCoords = useCallback(async (coords) => {
     window.localStorage.clear()
+    setError(null)
     setLoading(true)
     try {
       const response = await api.get(
         `/search/?lattlong=${coords.lat},${coords.long}`
       )
-      if (cities.data.length > 0) {
-        const cities = response.data
-        setCities(cities)
+      if (response.data.length > 0) {
+        setCities(response.data)
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
     }
-  }, [coords, cities])
+  }, [])
 
   const getCityListByName = useCallback(async () => {
     if (cityInput.validate()) {
       window.localStorage.clear()
       setCityWeather(null)
+      setError(null)
       setLoading(true)
       try {
         const response = await api.get(`/search/?query=${cityInput.value}`)
