@@ -28,6 +28,9 @@
   padding: 24px;
   border-radius: 4px;
 }
+.ContainerResult h2 {
+  margin-bottom: 24px;
+}
 .ContainerInputCity {
   display: flex;
   align-items: flex-end;
@@ -64,5 +67,22 @@
 
 .WeatherInfoContainer {
   display: flex;
+}
+.WeatherInfoContainer img {
+  flex: 1;
+}
+.WeatherDateTempContainer {
+  display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
+  margin-bottom: 16px;
+  flex: 7;
+}
+
+.MinMaxTempContainer {
+  display: flex;
+  font-size: 12px;
+}
+.MinMaxTempContainer P + p {
+  margin-left: 8px;
 }

@@ -7,7 +7,7 @@ const useForm = (type) => {
   function validate(value) {
     if (type === false) return true
     if (value.length === 0) {
-      setError('Digite um nome de cidade')
+      setError('Digite uma cidade')
       return false
     } else {
       setError(null)

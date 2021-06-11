@@ -5,19 +5,14 @@ import useForm from './customHook/useForm'
 import { FiMapPin } from 'react-icons/fi'
 import api from './Api'
 import Loading from './components/Loading'
+import dateFormat from './utils/dateFormat'
 import Styles from './App.module.css'
 
 const App = () => {
   const cityInput = useForm()
   const [loading, setLoading] = useState(null)
   const [error, setError] = useState(null)
-
-  const [coords, setCoords] = useState(() => {
-    if (window.localStorage.getItem('coords')) {
-      return JSON.parse(window.localStorage.getItem('coords'))
-    }
-    return null
-  })
+  const [coords, setCoords] = useState(null)
 
   const [cityWeather, setCityWeather] = useState(() => {
     if (window.localStorage.getItem('cityWeather')) {
@@ -26,21 +21,36 @@ const App = () => {
     return null
   })
 
-  const getCoords = () => {
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const lat = position.coords.latitude
-        const long = position.coords.longitude
-        window.localStorage.setItem('coords', JSON.stringify({ lat, long }))
-        setCoords({ lat, long })
-      },
-      (responseError) => {
-        setError(responseError.message)
-        return false
-      }
+  const formatTheCitysWeather = useCallback(async (data) => {
+    const dateToday = new Date()
+    const dateTodayFormated = dateFormat(dateToday)
+    const cityWeatherInfoFormated = data.consolidated_weather
+      .filter(
+        (weatherinfo) =>
+          dateFormat(weatherinfo.applicable_date) >= dateTodayFormated
+      )
+      .map((weatherinfo) => ({
+        ...weatherinfo,
+        max_temp: weatherinfo.max_temp.toFixed(2),
+        min_temp: weatherinfo.min_temp.toFixed(2),
+        applicable_date:
+          dateFormat(weatherinfo.applicable_date) === dateTodayFormated
+            ? 'Hoje'
+            : dateFormat(weatherinfo.applicable_date)
+      }))
+
+    window.localStorage.setItem(
+      'cityWeather',
+      JSON.stringify({
+        ...data,
+        consolidated_weather: [...cityWeatherInfoFormated]
+      })
     )
-    setLoading(false)
-  }
+    setCityWeather({
+      ...data,
+      consolidated_weather: [...cityWeatherInfoFormated]
+    })
+  }, [])
 
   const getWeatherByCityName = useCallback(async () => {
     window.localStorage.clear()
@@ -54,11 +64,7 @@ const App = () => {
         if (response.data.length > 0) {
           const cityWoeid = response.data[0].woeid
           const cityWeather = await api.get(`/${cityWoeid}`)
-          window.localStorage.setItem(
-            'cityWeather',
-            JSON.stringify(cityWeather.data)
-          )
-          setCityWeather(cityWeather.data)
+          formatTheCitysWeather(cityWeather.data)
         } else {
           setError('Nenhuma informação localizada')
         }
@@ -68,23 +74,42 @@ const App = () => {
         setLoading(false)
       }
     }
-  }, [cityInput])
+  }, [cityInput, formatTheCitysWeather])
 
-  const getWeatherByCityCoords = useCallback(async (coords) => {
-    setLoading(true)
+  const getCoords = () => {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude
+        const long = position.coords.longitude
+        setCoords({ lat, long })
+      },
+      (responseError) => {
+        setError(responseError.message)
+        return false
+      }
+    )
+    setLoading(false)
+  }
+
+  const getWeatherByCityCoords = useCallback(async () => {
+    window.localStorage.clear()
     setError(null)
+    setCityWeather(null)
+    setCoords(null)
+    setLoading(true)
     try {
       const cities = await api.get(
         `/search/?lattlong=${coords.lat},${coords.long}`
       )
       const cityWoeid = cities.data[0].woeid
       const cityWeather = await api.get(`/${cityWoeid}`)
-      setCityWeather(cityWeather.data)
-      setLoading(false)
+      formatTheCitysWeather(cityWeather.data)
     } catch (error) {
       setError(error.message)
+    } finally {
+      setLoading(false)
     }
-  }, [])
+  }, [formatTheCitysWeather, coords])
 
   useEffect(() => {
     if (coords && !cityWeather) getWeatherByCityCoords(coords)
@@ -124,13 +149,17 @@ const App = () => {
             {error && <p className={Styles.ErrorTitle}>{error}</p>}
             {cityWeather && (
               <>
-                <div>{cityWeather.title}</div>
+                <h2>{cityWeather.title}</h2>
                 {cityWeather.consolidated_weather.map((weather, index) => (
                   <div className={Styles.WeatherInfoContainer} key={index}>
-                    <p>{weather.min_temp}</p>
-                    <p>{weather.max_temp}</p>
-                    <p>{weather.weather_state_name}</p>
-                    <img src="" alt="" />
+                    <div className={Styles.WeatherDateTempContainer}>
+                      <h3>{weather.applicable_date}</h3>
+                      <p>{weather.weather_state_name}</p>
+                      <div className={Styles.MinMaxTempContainer}>
+                        <p>{weather.min_temp}ºC</p>
+                        <p>{weather.max_temp}ºC</p>
+                      </div>
+                    </div>
                     <img
                       width="24px"
                       src={`https://www.metaweather.com/static/img/weather/${weather.weather_state_abbr}.svg`}
