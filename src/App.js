@@ -31,7 +31,7 @@ const App = () => {
   }
 
   const formatTheCitysWeather = useCallback(async (data) => {
-    const WeatherStates = {
+    const weatherStates = {
       sn: 'Nevando',
       sl: 'Chuva de granizo',
       h: 'Chuva de granizo',
