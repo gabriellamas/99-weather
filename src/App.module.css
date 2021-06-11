@@ -33,6 +33,7 @@
 }
 .ContainerInputCity {
   display: flex;
+  width: 100%;
   align-items: flex-end;
   margin-bottom: 16px;
 }
@@ -67,6 +68,10 @@
 
 .WeatherInfoContainer {
   display: flex;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
+  padding-bottom: 16px;
 }
 .WeatherInfoContainer img {
   flex: 1;
@@ -75,16 +80,19 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  margin-bottom: 16px;
-  flex: 7;
+  flex: 8;
+  color: #2b2b2b;
 }
 .WeatherDateTempContainer h6 {
   font-weight: 400;
+  margin: 4px 0px 0px;
+  display: block;
 }
 
 .MinMaxTempContainer {
   display: flex;
   font-size: 12px;
+  margin: 4px 0px;
 }
 .MinMaxTempContainer p + p {
   margin-left: 8px;

@@ -1,14 +1,22 @@
-*{
+* {
   box-sizing: border-box;
-  margin:0px;
-  padding:0px;
+  margin: 0px;
+  padding: 0px;
   font-family: 'Roboto', sans-serif;
 }
 
-body{
-  background:#f4f4f4;
+body {
+  background: #f4f4f4;
 }
 
-button{
-  cursor:pointer;
+button {
+  cursor: pointer;
+}
+
+h2,
+h3 {
+  margin-bottom: 24px;
+}
+#root {
+  padding: 0px 16px;
 }

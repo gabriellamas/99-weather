@@ -1,5 +1,6 @@
-.wrapper{
+.wrapper {
   position: relative;
+  width: 100%;
 }
 .input {
   border: 1px solid #eee;
@@ -29,9 +30,9 @@
 
 .error {
   position: absolute;
-  bottom:0px;
-  left:0px;
+  bottom: 0px;
+  left: 0px;
   color: #f31;
   font-size: 12px;
-  transform: translate(0%,100%);
+  transform: translate(0%, 100%);
 }

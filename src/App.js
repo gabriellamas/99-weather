@@ -181,9 +181,9 @@ const App = () => {
         <div className={Styles.ContainerInputs}>
           <div className={Styles.ContainerInputCity}>
             <Input
-              label="Digite uma cidade"
+              label="Buscar cidade"
               type="text"
-              placeholder="Ex: London, São Paulo"
+              placeholder="Ex: Rio, São Paulo"
               {...cityInput}
             />
             <button type="submit" onClick={getCityListByName}>
@@ -198,6 +198,7 @@ const App = () => {
           </div>
         </div>
       </div>
+
       <div className={Styles.WrapperResult}>
         {(loading || error || cityWeather || cities) && (
           <div className={Styles.ContainerResult}>
@@ -205,7 +206,7 @@ const App = () => {
             {error && <p className={Styles.ErrorTitle}>{error}</p>}
             {cities && !cityWeather && (
               <>
-                <h2>Lista encontrada</h2>
+                <h3>Cidades encontradas</h3>
                 {cities.map((city, index) => (
                   <button
                     key={index}
@@ -224,11 +225,15 @@ const App = () => {
                 {cityWeather.consolidated_weather.map((weather, index) => (
                   <div className={Styles.WeatherInfoContainer} key={index}>
                     <div className={Styles.WeatherDateTempContainer}>
-                      <h3>{weather.customDayName || weather.realDayName}</h3>
+                      <h4>{weather.customDayName || weather.realDayName}</h4>
                       <h6>{weather.weatherTradution}</h6>
                       <div className={Styles.MinMaxTempContainer}>
-                        <p>{weather.formatedMinTemp}ºC</p>
-                        <p>{weather.formatedMaxTemp}ºC</p>
+                        <p>
+                          <strong>Min:</strong> {weather.formatedMinTemp}ºC
+                        </p>
+                        <p>
+                          <strong>Max:</strong> {weather.formatedMaxTemp}ºC
+                        </p>
                       </div>
                     </div>
                     <img
