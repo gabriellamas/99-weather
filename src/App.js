@@ -16,6 +16,8 @@ const App = () => {
   const [cities, setCities] = useState(null)
 
   const [cityWeather, setCityWeather] = useState(() => {
+    // FIXME: o retorno poderia ser feito em apenas uma linha
+    // JSON.parse(window.localStorage.getItem('cityWeather'))
     if (window.localStorage.getItem('cityWeather')) {
       return JSON.parse(window.localStorage.getItem('cityWeather'))
     }
@@ -23,6 +25,7 @@ const App = () => {
   })
 
   const clearInfos = () => {
+    // FIXME: (o método .clear() remove TODOS os itens armazenados na sessão)
     window.localStorage.clear()
     setCityWeather(null)
     setError(null)
@@ -31,7 +34,8 @@ const App = () => {
   }
 
   const formatTheCitysWeather = useCallback(async (data) => {
-    const weatherStates = {
+    // FIXME: (o mapeamento não está correto)
+    const WeatherStates = {
       sn: 'Nevando',
       sl: 'Chuva de granizo',
       h: 'Chuva de granizo',
@@ -54,6 +58,8 @@ const App = () => {
     ]
     const dateToday = new Date()
     const dateTodayFormated = dateFormat(dateToday)
+
+    // FIXME: (poderia estar em outro método)
     const cityWeatherInfoFormated = data.consolidated_weather
       .filter(
         (weatherinfo) =>
@@ -64,16 +70,19 @@ const App = () => {
         let realDayName
         let formatedMinTemp = weatherinfo.min_temp.toFixed(2)
         let formatedMaxTemp = weatherinfo.max_temp.toFixed(2)
-        let weatherTradution = weatherStates[weatherinfo.weather_state_abbr]
+        let weatherTradution = WeatherStates[weatherinfo.weather_state_abbr]
 
         if (dateFormat(weatherinfo.applicable_date) === dateTodayFormated) {
           customDayName = 'Hoje'
           realDayName = new Date(weatherinfo.applicable_date).getDay()
         }
+
+        // FIXME: (o correto é fazer a verificação pela data, pois a ordem da lista pode mudar)
         if (index === 1) {
           customDayName = 'Amanhã'
           realDayName = new Date(weatherinfo.applicable_date).getDay()
         }
+
         realDayName = days[new Date(weatherinfo.applicable_date).getDay()]
 
         return {
@@ -86,6 +95,7 @@ const App = () => {
         }
       })
 
+    // FIXME: (poderia estar em outro método)
     window.localStorage.setItem(
       'cityWeather',
       JSON.stringify({
@@ -93,6 +103,7 @@ const App = () => {
         consolidated_weather: [...cityWeatherInfoFormated]
       })
     )
+
     setCityWeather({
       ...data,
       consolidated_weather: [...cityWeatherInfoFormated]
@@ -153,6 +164,13 @@ const App = () => {
       setLoading(true)
       try {
         const response = await api.get(`/search/?query=${cityInput.value}`)
+
+        // FIXME:
+        // o condicional poderia ser escrito assim `if (response.data.length) {}`
+        // pois o relativo `booleano` de qualquer número maior que `0` é `true`
+        //
+        // ou até mesmo ser um ternário
+        // response.data.length ? setCities(cities) : setError('Nenhuma cidade encontrada')
         if (response.data.length > 0) {
           const cities = response.data
           setCities(cities)
@@ -171,6 +189,7 @@ const App = () => {
     if (coords && !cityWeather) getCityListByCoords(coords)
   }, [coords, getCityListByCoords, cityWeather])
 
+  // FIXME: o código poderia ser dividido em mais componentes
   return (
     <>
       <div className={Styles.WrapperTitle}>
